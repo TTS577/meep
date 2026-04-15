@@ -4,7 +4,9 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  # Pin libdeflate to a range compatible with htslib 1.17–1.23 (required by medaka 1.11.3)
+  - libdeflate >=1.13,<1.19
   # Long-read polishing
-  - medaka >=1.11
+  - medaka =1.11.3
   # Python stack
-  - python >=3.9
+  - python >=3.9,<3.11
