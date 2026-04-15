@@ -1,0 +1,10 @@
+name: meep_medaka
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  # Long-read polishing
+  - medaka >=1.11
+  # Python stack
+  - python >=3.9

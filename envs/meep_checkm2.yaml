@@ -1,0 +1,10 @@
+name: meep_checkm2
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  # Genome completeness & contamination estimation
+  - checkm2 >=1.0
+  # Python stack
+  - python >=3.9
