@@ -23,10 +23,10 @@ All pipeline steps run inside Docker/Apptainer (Singularity) containers hosted o
 
 | Image | Tools |
 |-------|-------|
-| `ghcr.io/tts577/meep/longread-env:latest` | minimap2, samtools, porechop, filtlong, flye, nanostat |
-| `ghcr.io/tts577/meep/assembly-tools:latest` | QUAST, MultiQC |
-| `ghcr.io/tts577/meep/medaka:latest` | Medaka 1.11.3 |
-| `ghcr.io/tts577/meep/checkm2:latest` | CheckM2 |
+| `ghcr.io/tts577/meepmeep/longread-env:latest` | minimap2, samtools, porechop, filtlong, flye, nanostat |
+| `ghcr.io/tts577/meepmeep/assembly-tools:latest` | QUAST, MultiQC |
+| `ghcr.io/tts577/meepmeep/medaka:latest` | Medaka 1.11.3 |
+| `ghcr.io/tts577/meepmeep/checkm2:latest` | CheckM2 |
 
 Images are built automatically via GitHub Actions (`.github/workflows/build-containers.yml`) whenever the `envs/` or `containers/` directories change.
 
@@ -55,8 +55,8 @@ Adjust `config/config.yaml` to set output paths, filtlong thresholds, Flye genom
 
 Place the following files at the paths configured in `config/config.yaml` (defaults shown):
 
-- `meep_pipeline/resources/GRCh38.mmi` — minimap2 index of the human reference genome
-- `meep_pipeline/resources/checkm2_db/uniref100.KO.1.dmnd` — CheckM2 diamond database
+- `meepmeep/resources/GRCh38.mmi` — minimap2 index of the human reference genome
+- `meepmeep/resources/checkm2_db/uniref100.KO.1.dmnd` — CheckM2 diamond database
 
 ## Running the pipeline
 
@@ -75,8 +75,8 @@ snakemake --use-apptainer --cores <N>
 All Dockerfiles use the repository root as the build context so that the `envs/` YAML files are accessible:
 
 ```bash
-docker build -f containers/longread_env/Dockerfile   -t meep-longread-env  .
-docker build -f containers/assembly_tools/Dockerfile -t meep-assembly-tools .
-docker build -f containers/medaka/Dockerfile         -t meep-medaka        .
-docker build -f containers/checkm2/Dockerfile        -t meep-checkm2       .
+docker build -f containers/longread_env/Dockerfile   -t meepmeep-longread-env  .
+docker build -f containers/assembly_tools/Dockerfile -t meepmeep-assembly-tools .
+docker build -f containers/medaka/Dockerfile         -t meepmeep-medaka        .
+docker build -f containers/checkm2/Dockerfile        -t meepmeep-checkm2       .
 ```
