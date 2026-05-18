@@ -1,4 +1,4 @@
-name: meep_assembly_tools
+name: meepmeep_assembly_tools
 channels:
   - bioconda
   - conda-forge
