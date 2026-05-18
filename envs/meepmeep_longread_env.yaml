@@ -1,4 +1,4 @@
-name: meep_longread_env
+name: meepmeep_longread_env
 channels:
   - bioconda
   - conda-forge
