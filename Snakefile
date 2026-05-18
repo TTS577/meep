@@ -4,6 +4,12 @@ from pathlib import Path
 # ── Config ────────────────────────────────────────────────────────────────────
 configfile: "config/config.yaml"
 
+# ── Container images (GHCR) ───────────────────────────────────────────────────
+CONTAINER_LONGREAD  = "docker://ghcr.io/tts577/meep/longread-env:latest"
+CONTAINER_ASSEMBLY  = "docker://ghcr.io/tts577/meep/assembly-tools:latest"
+CONTAINER_MEDAKA    = "docker://ghcr.io/tts577/meep/medaka:latest"
+CONTAINER_CHECKM2   = "docker://ghcr.io/tts577/meep/checkm2:latest"
+
 OUTDIR    = config.get("outdir", "meep_pipeline/results")
 HUMAN_REF = config.get("human_ref", "meep_pipeline/resources/GRCh38.mmi")
 
@@ -48,7 +54,7 @@ rule nanostat_raw:
         outdir = "{outdir}/{sample}/01_nanostat_raw",
         name   = "{sample}_NanoStats.txt",
     threads: 4
-    conda: "envs/meep_longread_env.yaml"
+    container: CONTAINER_LONGREAD
     log: "{outdir}/{sample}/logs/nanostat_raw.log"
     shell:
         """
@@ -72,7 +78,7 @@ rule human_depletion_minimap2:
         depleted = "{outdir}/{sample}/02_human_depletion/{sample}_nonhuman.fastq.gz",
         stats    = "{outdir}/{sample}/02_human_depletion/{sample}_flagstat.txt",
     threads: 16
-    conda: "envs/meep_longread_env.yaml"
+    container: CONTAINER_LONGREAD
     log: "{outdir}/{sample}/logs/human_depletion.log"
     shell:
         """
@@ -99,7 +105,7 @@ rule porechop:
     output:
         reads = "{outdir}/{sample}/03_porechop/{sample}_trimmed.fastq.gz",
     threads: 8
-    conda: "envs/meep_longread_env.yaml"
+    container: CONTAINER_LONGREAD
     log: "{outdir}/{sample}/logs/porechop.log"
     shell:
         """
@@ -122,7 +128,7 @@ rule nanostat_clean:
         outdir = "{outdir}/{sample}/04_nanostat_clean",
         name   = "{sample}_NanoStats.txt",
     threads: 4
-    conda: "envs/meep_longread_env.yaml"
+    container: CONTAINER_LONGREAD
     log: "{outdir}/{sample}/logs/nanostat_clean.log"
     shell:
         """
@@ -147,7 +153,7 @@ rule filtlong:
         min_length   = config["filtlong"]["min_length"],
         min_mean_q   = config["filtlong"]["min_mean_q"],
         keep_percent = config["filtlong"]["keep_percent"],
-    conda: "envs/meep_longread_env.yaml"
+    container: CONTAINER_LONGREAD
     log: "{outdir}/{sample}/logs/filtlong.log"
     shell:
         """
@@ -176,7 +182,7 @@ rule flye:
         extra       = config["flye"]["extra_args"],
         outdir      = "{outdir}/{sample}/06_flye",
     threads: 16
-    conda: "envs/meep_longread_env.yaml"
+    container: CONTAINER_LONGREAD
     log: "{outdir}/{sample}/logs/flye.log"
     shell:
         """
@@ -201,7 +207,7 @@ rule quast:
     params:
         outdir = "{outdir}/{sample}/07_quast",
     threads: 4
-    conda: "envs/meep_assembly_tools.yaml"
+    container: CONTAINER_ASSEMBLY
     log: "{outdir}/{sample}/logs/quast.log"
     shell:
         """
@@ -225,7 +231,7 @@ rule medaka:
         model  = config["medaka"]["model"],
         outdir = "{outdir}/{sample}/08_medaka",
     threads: 8
-    conda: "envs/meep_medaka.yaml"
+    container: CONTAINER_MEDAKA
     log: "{outdir}/{sample}/logs/medaka.log"
     shell:
         """
@@ -250,7 +256,7 @@ rule checkm2:
         outdir = "{outdir}/{sample}/09_checkm2",
         db     = config["checkm2"]["db"],
     threads: 8
-    conda: "envs/meep_checkm2.yaml"
+    container: CONTAINER_CHECKM2
     log: "{outdir}/{sample}/logs/checkm2.log"
     shell:
         """
@@ -274,7 +280,7 @@ rule multiqc:
     params:
         indir  = OUTDIR,
         outdir = f"{OUTDIR}/multiqc",
-    conda: "envs/meep_assembly_tools.yaml"
+    container: CONTAINER_ASSEMBLY
     log: f"{OUTDIR}/logs/multiqc.log"
     shell:
         """
